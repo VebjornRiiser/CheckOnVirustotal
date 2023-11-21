@@ -16,28 +16,35 @@ def show_popup(title, message):
     messagebox.showinfo(title, message)
     root.quit()
 
+def create_file_hash(filepath)-> str:
+    sha256sum = hashlib.sha256()
+    with open(filepath, 'rb') as file:
+        # Read and update hash string value in blocks of 4K
+        try:
+            for byte_block in iter(lambda: file.read(4096),b""):
+                sha256sum.update(byte_block)
+        except Exception as e:
+            log_error(e)
+            exit(1)
+    return sha256sum.hexdigest().upper()
 
-if len(sys.argv)<2:
-    log_error("Program did not get any arguments supplied") # Compare with clipboard then?
-    print("Could not find file to create hash from!")
-    exit(1)
-
-
-if not os.path.exists(sys.argv[-1]):
-    error = f"Could not find file to create hash from! Path: {sys.argv[-1]}"
-    log_error(error)
-    print(error)
-    exit(1)
-
-
-sha256sum = hashlib.sha256()
-
-with open(sys.argv[-1], 'rb') as file:
-    # Read and update hash string value in blocks of 4K
-    try:
-        for byte_block in iter(lambda: file.read(4096),b""):
-            sha256sum.update(byte_block)
-    except Exception as e:
-        log_error(e)
+def main():
+    if len(sys.argv)<2:
+        log_error("Program did not get any arguments supplied") # Compare with clipboard then?
+        print("Could not find file to create hash from!")
         exit(1)
-webbrowser.open_new_tab(f"https://www.virustotal.com/gui/search/{sha256sum.hexdigest().upper()}")
+    path = sys.argv[-1]
+
+    if not os.path.exists(path):
+        error = f"Could not find file to create hash from! Path: {path}"
+        log_error(error)
+        print(error)
+        exit(1)
+
+    hash = create_file_hash(path)
+
+    webbrowser.open_new_tab(f"https://www.virustotal.com/gui/search/{hash}")
+
+
+if __name__ == "__main__":
+    main()
