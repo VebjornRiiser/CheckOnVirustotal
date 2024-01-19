@@ -1,6 +1,5 @@
 import os
 import winreg
-# os.system("dir")
 
 python_executable = os.path.join(os.__file__.split("lib\\")[0], "pythonw.exe")
 path_to_pyw_file = os.path.abspath(os.path.dirname(__file__)) + r"\check.pyw"
