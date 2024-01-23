@@ -24,15 +24,19 @@ def show_popup(title, message):
 
 
 def create_file_hash(filepath) -> str:
-    sha256sum = hashlib.sha256()
     with open(filepath, 'rb') as file:
         # Read and update hash string value in blocks of 4K
-        try:
-            for byte_block in iter(lambda: file.read(4096), b""):
-                sha256sum.update(byte_block)
-        except Exception as e:
-            log_error(e)
-            exit(1)
+        return create_hash(file)
+
+
+def create_hash(reader):
+    sha256sum = hashlib.sha256()
+    try:
+        for byte_block in iter(lambda: reader.read(4096), b""):
+            sha256sum.update(byte_block)
+    except Exception as e:
+        log_error(e)
+        exit(1)
     return sha256sum.hexdigest().upper()
 
 
