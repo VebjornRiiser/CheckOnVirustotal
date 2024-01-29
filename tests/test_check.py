@@ -1,5 +1,9 @@
-from src import check
+import sys
+from pathlib import Path
 from io import BytesIO
+src_dir = str(Path(__file__).parent.parent / 'src')
+sys.path.append(src_dir)
+from src import main
 
 EmptyFileHash = "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
 filepath = "tests/file with spaces.txt"
@@ -7,17 +11,17 @@ filepath = "tests/file with spaces.txt"
 
 def test_correct_hash():
     #Empty file with spaces in name
-    assert check.create_file_hash(filepath) == EmptyFileHash
+    assert main.create_file_hash(filepath) == EmptyFileHash
 
 
 def test_wrong_hash():
-    assert check.create_file_hash(filepath) != "AAAAAAD74E"
+    assert main.create_file_hash(filepath) != "AAAAAAD74E"
 
 
 def test_create_hash():
     # Test case 1: Empty input
     reader = BytesIO(b"")
-    assert check.create_hash(reader) == EmptyFileHash
+    assert main.create_hash(reader) == EmptyFileHash
 
     # Test case 2: Non-empty input
     # reader = BytesIO(b"Hello, world!")
